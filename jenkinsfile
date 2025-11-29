@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        EC2_IP   = "15.207.114.83:8080"
+        EC2_IP   = "65.1.94.32"
         WEBROOT  = "/var/www/html"
         CREDS    = "Jenkins_key"
         REPO_URL = "https://github.com/IamAkshayjagtap/static-website-project.git"
