@@ -22,11 +22,14 @@ pipeline {
                 sshagent(credentials: [CREDS]) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} \\
-                        "sudo rm -rf ${WEBROOT}/* && \\
-                        sudo git clone -b ${BRANCH} ${REPO_URL} ${WEBROOT} && \\
-                        sudo chmod -R 755 ${WEBROOT} && \\
-                        sudo chown -R www-data:www-data ${WEBROOT} && \\
-                        sudo systemctl restart nginx"
+                        "if [ -d ${WEBROOT}/.git ]; then \\
+                             cd ${WEBROOT} && git reset --hard && git pull origin ${BRANCH}; \\
+                         else \\
+                             sudo rm -rf ${WEBROOT}/* && git clone -b ${BRANCH} ${REPO_URL} ${WEBROOT}; \\
+                         fi && \\
+                         sudo chmod -R 755 ${WEBROOT} && \\
+                         sudo chown -R www-data:www-data ${WEBROOT} && \\
+                         sudo systemctl restart nginx"
                     """
                 }
             }
