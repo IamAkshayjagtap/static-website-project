@@ -1,0 +1,36 @@
+pipeline {
+    agent any
+
+    environment {
+        EC2_IP   = "15.207.114.83:8080"
+        WEBROOT  = "/var/www/html"
+        CREDS    = "Jenkins_key"
+        REPO_URL = "https://github.com/IamAkshayjagtap/static-website-project.git"
+        BRANCH   = "main"
+    }
+
+    stages {
+
+        stage('Pull Latest Code') {
+            steps {
+                git branch: BRANCH, url: REPO_URL
+            }
+        }
+
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(credentials: [CREDS]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} << 'EOF'
+                        sudo rm -rf ${WEBROOT}/*
+                        sudo git clone https://github.com/IamAkshayjagtap/static-website-project.git ${WEBROOT}
+                        sudo chmod -R 755 ${WEBROOT}
+                        sudo chown -R www-data:www-data ${WEBROOT}
+                        sudo systemctl restart nginx
+                    EOF
+                    """
+                }
+            }
+        }
+    }
+}
