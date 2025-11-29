@@ -21,13 +21,12 @@ pipeline {
             steps {
                 sshagent(credentials: [CREDS]) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} << 'EOF'
-                        sudo rm -rf ${WEBROOT}/*
-                        sudo git clone https://github.com/IamAkshayjagtap/static-website-project.git ${WEBROOT}
-                        sudo chmod -R 755 ${WEBROOT}
-                        sudo chown -R www-data:www-data ${WEBROOT}
-                        sudo systemctl restart nginx
-                    EOF
+                        ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} \\
+                        "sudo rm -rf ${WEBROOT}/* && \\
+                        sudo git clone -b ${BRANCH} ${REPO_URL} ${WEBROOT} && \\
+                        sudo chmod -R 755 ${WEBROOT} && \\
+                        sudo chown -R www-data:www-data ${WEBROOT} && \\
+                        sudo systemctl restart nginx"
                     """
                 }
             }
