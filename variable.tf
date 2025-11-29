@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "ami_id" {
-  default = "ami-0f5ae0fd89ce5cc6f"  # Latest Ubuntu in ap-south-1
+  default = "ami-02b8269d5e85954ef"  # Latest Ubuntu in ap-south-1
 }
 
 variable "key_name" {
