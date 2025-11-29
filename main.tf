@@ -49,7 +49,7 @@ resource "aws_instance" "webserver" {
   key_name      = aws_key_pair.project_key.key_name
   security_groups = [aws_security_group.web_sg.name]
 
-  user_data = file("userdata.sh")
+  user_data = file("user_data.sh")
 
   tags = {
     Name = "Static-Website-Server"
