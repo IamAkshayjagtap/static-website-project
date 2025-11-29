@@ -22,10 +22,11 @@ pipeline {
                 sshagent(credentials: [CREDS]) {
                     sh """
                         ssh -o StrictHostKeyChecking=no ubuntu@${EC2_IP} \\
-                        "if [ -d ${WEBROOT}/.git ]; then \\
+                        "git config --global --add safe.directory ${WEBROOT} && \\
+                         if [ -d ${WEBROOT}/.git ]; then \\
                              cd ${WEBROOT} && git reset --hard && git pull origin ${BRANCH}; \\
                          else \\
-                             sudo rm -rf ${WEBROOT}/* && git clone -b ${BRANCH} ${REPO_URL} ${WEBROOT}; \\
+                             sudo rm -rf ${WEBROOT}/{*,.*} 2>/dev/null && git clone -b ${BRANCH} ${REPO_URL} ${WEBROOT}; \\
                          fi && \\
                          sudo chmod -R 755 ${WEBROOT} && \\
                          sudo chown -R www-data:www-data ${WEBROOT} && \\
